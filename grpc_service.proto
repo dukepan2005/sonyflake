@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package sonyflake;
+option go_package = ".;sonyflake";
+
+// https://grpc.io/docs/languages/go/quickstart/
+// protoc --go_out=. --go-grpc_out=. grpc_service.proto
+
+// https://grpc.io/docs/languages/python/quickstart/
+// python -m pip install -U grpcio grpcio-tools
+// python -m grpc_tools.protoc --proto_path="absolute path contain proto file" --python_out=. --grpc_python_out=. grpc_service.proto
+
+message SonyFlakeRequest{
+    uint32 Num = 1;
+}
+
+message SonyFlakeResponse{
+    uint64 ID = 1;
+    uint64 Msb = 2;
+    uint64 Time  = 3;
+    uint64 Sequence = 4;
+    uint64 MachineID = 5;
+}
+
+service SonyflakeService{
+    rpc NextID(SonyFlakeRequest) returns (SonyFlakeResponse) {}
+}
+
