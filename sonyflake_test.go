@@ -8,8 +8,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/sony/sonyflake/mock"
-	"github.com/sony/sonyflake/types"
+	"github.com/dukepan2005/sonyflake/mock"
+	"github.com/dukepan2005/sonyflake/types"
 )
 
 var sf *Sonyflake

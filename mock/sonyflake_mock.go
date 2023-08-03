@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"net"
 
-	"github.com/sony/sonyflake/types"
+	"github.com/dukepan2005/sonyflake/types"
 )
 
 // NewSuccessfulInterfaceAddrs returns a single private IP address
@@ -27,7 +27,7 @@ func NewFailingInterfaceAddrs() types.InterfaceAddrs {
 	}
 }
 
-// NewFailingInterfaceAddrs returns an empty slice of addresses
+// NewNilInterfaceAddrs returns an empty slice of addresses
 func NewNilInterfaceAddrs() types.InterfaceAddrs {
 	return func() ([]net.Addr, error) {
 		return []net.Addr{}, nil
