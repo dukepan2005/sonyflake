@@ -13,7 +13,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/dukepan2005/sonyflake/types"
+	"github.com/sony/sonyflake/types"
 )
 
 // These constants are the bit lengths of Sonyflake ID parts.
@@ -53,9 +53,13 @@ type Sonyflake struct {
 }
 
 var (
-	ErrStartTimeAhead   = errors.New("start time is ahead of now")
+	// ErrStartTimeAhead is returned when Settings.StartTime is ahead of the current time.
+	ErrStartTimeAhead = errors.New("start time is ahead of now")
+	// ErrNoPrivateAddress is returned when no private IP address is found.
 	ErrNoPrivateAddress = errors.New("no private ip address")
-	ErrOverTimeLimit    = errors.New("over the time limit")
+	// ErrOverTimeLimit is returned when the Sonyflake time overflows.
+	ErrOverTimeLimit = errors.New("over the time limit")
+	// ErrInvalidMachineID is returned when the machine ID is invalid.
 	ErrInvalidMachineID = errors.New("invalid machine id")
 )
 
