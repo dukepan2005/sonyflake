@@ -9,11 +9,12 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/dukepan2005/sonyflake"
-	"github.com/dukepan2005/sonyflake/awsutil"
 	"github.com/jessevdk/go-flags"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/keepalive"
+
+	"github.com/sony/sonyflake"
+	"github.com/sony/sonyflake/awsutil"
 )
 
 var sf *sonyflake.Sonyflake

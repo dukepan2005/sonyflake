@@ -10,10 +10,12 @@ option go_package = ".;sonyflake";
 // python -m pip install -U grpcio grpcio-tools
 // python -m grpc_tools.protoc --proto_path="absolute path contain proto file" --python_out=. --grpc_python_out=. grpc_service.proto
 
+// SonyFlakeRequest contains the number of IDs to generate.
 message SonyFlakeRequest{
     uint32 num = 1;
 }
 
+// SonyFlakeResponse contains the generated ID and its components.
 message SonyFlakeResponse{
     uint64 id = 1;
     uint64 msb = 2;
@@ -22,7 +24,9 @@ message SonyFlakeResponse{
     uint64 machineID = 5;
 }
 
+// SonyflakeService defines the Sonyflake gRPC service.
 service SonyflakeService{
+    // NextID generates the next unique ID.
     rpc NextID(SonyFlakeRequest) returns (SonyFlakeResponse) {}
 }
 

@@ -1,4 +1,4 @@
-module github.com/dukepan2005/sonyflake
+module github.com/sony/sonyflake
 
 go 1.20
 
