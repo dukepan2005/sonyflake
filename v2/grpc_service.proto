@@ -17,11 +17,7 @@ message SonyFlakeRequest{
 
 // SonyFlakeResponse contains the generated ID and its components.
 message SonyFlakeResponse{
-    uint64 id = 1;
-    uint64 msb = 2;
-    uint64 time  = 3;
-    uint64 sequence = 4;
-    uint64 machine_id = 5;
+    int64 sequence = 1;
 }
 
 // SonyflakeService defines the Sonyflake gRPC service.
