@@ -61,6 +61,7 @@ var (
 	ErrOverTimeLimit = errors.New("over the time limit")
 	// ErrInvalidMachineID is returned when the machine ID is invalid.
 	ErrInvalidMachineID = errors.New("invalid machine id")
+	ErrInvalidSequence  = errors.New("invalid sequence number")
 )
 
 var defaultInterfaceAddrs = net.InterfaceAddrs
@@ -215,6 +216,25 @@ func SequenceNumber(id uint64) uint64 {
 func MachineID(id uint64) uint64 {
 	const maskMachineID = uint64(1<<BitLenMachineID - 1)
 	return id & maskMachineID
+}
+
+// Compose creates a Sonyflake ID from its parts.
+func Compose(sf *Sonyflake, t time.Time, sequence uint16, machineID uint16) (uint64, error) {
+	elapsedTime := toSonyflakeTime(t.UTC()) - sf.startTime
+	if elapsedTime < 0 {
+		return 0, ErrStartTimeAhead
+	}
+	if elapsedTime >= 1<<BitLenTime {
+		return 0, ErrOverTimeLimit
+	}
+
+	if sequence >= 1<<BitLenSequence {
+		return 0, ErrInvalidSequence
+	}
+
+	return uint64(elapsedTime)<<(BitLenSequence+BitLenMachineID) |
+		uint64(sequence)<<BitLenMachineID |
+		uint64(machineID), nil
 }
 
 // Decompose returns a set of Sonyflake ID parts.
