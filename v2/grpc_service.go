@@ -9,21 +9,18 @@ var _ SonyflakeServiceServer = new(GrpcSonyflakeService)
 // GrpcSonyflakeService implement SonyflakeServiceServer interface
 type GrpcSonyflakeService struct {
 	UnimplementedSonyflakeServiceServer
-	Sf *Sonyflake
+	IDCache chan int64
 }
 
 // NextID generate sequence
 func (rpcS *GrpcSonyflakeService) NextID(ctx context.Context, req *SonyFlakeRequest) (*SonyFlakeResponse, error) {
 	var (
 		sequence int64
-		err      error
 	)
 
+	// generate ids, extract id from cache
 	for idx := 0; idx < int(req.GetNum()); idx++ {
-		sequence, err = rpcS.Sf.NextID()
-		if err != nil {
-			return nil, err
-		}
+		sequence = <-rpcS.IDCache
 	}
 
 	return &SonyFlakeResponse{
