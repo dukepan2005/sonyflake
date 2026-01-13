@@ -88,6 +88,26 @@ func (sf *Sonyflake) NextID() (int64, error)
 NextID can continue to generate IDs for about 174 years from StartTime by default.
 But after the Sonyflake time is over the limit, NextID returns an error.
 
+## gRPC Usage
+
+The gRPC service in [v2/grpc_service.proto](v2/grpc_service.proto) exposes the same `NextID` capability over the network, with the server implementation located in [v2/grpc/sonyflake_server.go](v2/grpc/sonyflake_server.go).
+
+1. **Generate stubs** for your target language. For Go, run `protoc --go_out=. --go-grpc_out=. v2/grpc_service.proto`. Other languages can use the same proto definition with their respective `protoc` plugins.
+2. **Run the server** from the root of this repository:
+
+  ```sh
+  go run ./v2/grpc/sonyflake_server.go --port 8083            # add --aws to read the machine ID from EC2 metadata
+  ```
+
+  The server pre-generates IDs into an in-memory cache so that the `NextID` RPC can respond with low latency.
+3. **Call the service** by invoking `sonyflake.SonyflakeService/NextID`. The request message contains a single field `num` that indicates how many IDs to advance before returning the last generated value. Example using `grpcurl`:
+
+  ```sh
+  grpcurl -plaintext -d '{"num": 1}' localhost:8083 sonyflake.SonyflakeService/NextID
+  ```
+
+For load testing the service, the [ghz](https://ghz.sh/docs/intro) command documented in [v2/grpc/README.md](v2/grpc/README.md) can be used, e.g. `ghz --proto=v2/grpc_service.proto --call=sonyflake.SonyflakeService/NextID --insecure --async --concurrency=50 --total=10000 --data='{"num": 1}' 0.0.0.0:8083`.
+
 ## AWS VPC and Docker
 
 The [awsutil](https://github.com/sony/sonyflake/blob/master/v2/awsutil) package provides
