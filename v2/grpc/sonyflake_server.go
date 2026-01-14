@@ -20,7 +20,13 @@ import (
 var sf *sonyflake.Sonyflake
 
 var opts struct {
-	Port         int  `short:"p" long:"port" description:"the port grpc server listen" required:"true"`
+	Port int `short:"p" long:"port" description:"the port grpc server listen" required:"true"`
+
+	// set one flag field to compatible with the old sonyflake
+	CompatibleV1Sonyflake bool `short:"c" long:"compatible_v1" description:"set it to be compatible with the old sonyflake. it sets the start time to 2014-09-01 00:00:00"`
+
+	// In order to be compatible with the old sonyflake， the default start time is "2014-09-01 00:00:00"
+	// StartTime    string `short:"st" long:"start_time" description:"the start time of the Sonyflake instance, format: 2006-01-02 15:04:05. set it to 2014-09-01 00:00:00 to be compatible with the old sonyflake" default:"2025-01-01 00:00:00"`
 	AwsMachineID bool `long:"aws" description:"if use awsutil.AmazonEC2MachineID to canculate the unique ID of the Sonyflake instance"`
 }
 
@@ -57,6 +63,9 @@ func init() {
 	var st sonyflake.Settings
 	if opts.AwsMachineID {
 		st.MachineID = awsutil.AmazonEC2MachineID
+	}
+	if opts.CompatibleV1Sonyflake {
+		st.StartTime = time.Date(2014, 9, 1, 0, 0, 0, 0, time.UTC)
 	}
 
 	sf, err = sonyflake.New(st)
